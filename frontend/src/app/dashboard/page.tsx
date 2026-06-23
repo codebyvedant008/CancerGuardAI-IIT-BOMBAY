@@ -137,7 +137,7 @@ export default function UserDashboard() {
                 </div>
                 <div>
                   <span className="block text-sm text-slate-500 font-medium">Screening Modules</span>
-                  <span className="block text-2xl font-black text-slate-800">4 Active</span>
+                  <span className="block text-2xl font-black text-slate-800">16 Active</span>
                 </div>
               </div>
 

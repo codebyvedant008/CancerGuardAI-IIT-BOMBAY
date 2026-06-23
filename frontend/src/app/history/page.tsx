@@ -108,7 +108,7 @@ export default function PredictionHistoryPage() {
       scan.cancer_type.toLowerCase().includes(searchQuery.toLowerCase()) || 
       (scan.prediction?.prediction_label || "").toLowerCase().includes(searchQuery.toLowerCase());
       
-    const matchesType = selectedType === "" || scan.cancer_type === selectedType;
+    const matchesType = selectedType === "" || scan.cancer_type === selectedType || scan.cancer_type === `${selectedType}_cancer` || scan.cancer_type === `${selectedType}_tumor`;
     const matchesRisk = selectedRisk === "" || scan.prediction?.prediction_label === selectedRisk;
     
     return matchesSearch && matchesType && matchesRisk;
@@ -155,10 +155,22 @@ export default function PredictionHistoryPage() {
                 className="w-full px-3 py-2.5 border border-slate-200 bg-slate-50/50 rounded-xl text-sm focus:outline-none focus:border-teal-500 transition appearance-none cursor-pointer"
               >
                 <option value="">All Cancer Modules</option>
-                <option value="skin_cancer">Skin Cancer</option>
-                <option value="brain_tumor">Brain Tumor</option>
-                <option value="lung_cancer">Lung Cancer</option>
-                <option value="breast_cancer">Breast Cancer</option>
+                <option value="skin">Skin Cancer</option>
+                <option value="brain">Brain Tumor</option>
+                <option value="lung">Lung Cancer</option>
+                <option value="breast">Breast Cancer</option>
+                <option value="colorectal">Colorectal Cancer</option>
+                <option value="ovarian">Ovarian Cancer</option>
+                <option value="prostate">Prostate Cancer</option>
+                <option value="thyroid">Thyroid Cancer</option>
+                <option value="pancreatic">Pancreatic Cancer</option>
+                <option value="liver">Liver Cancer</option>
+                <option value="leukemia">Leukemia</option>
+                <option value="lymphoma">Lymphoma</option>
+                <option value="cervical">Cervical Cancer</option>
+                <option value="esophageal">Esophageal Cancer</option>
+                <option value="stomach">Stomach Cancer</option>
+                <option value="melanoma">Melanoma</option>
               </select>
             </div>
 

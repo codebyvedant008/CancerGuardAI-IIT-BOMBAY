@@ -1,8 +1,12 @@
 import os
+import uuid
 from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.pdfgen import canvas
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus.flowables import HRFlowable
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
 from app.config import settings
 
 class PDFService:
@@ -17,142 +21,210 @@ class PDFService:
         output_filename: str
     ) -> str:
         """
-        Generates a premium PDF medical risk assessment report.
+        Generates a premium PDF medical risk assessment report using Platypus.
         """
         os.makedirs(settings.REPORTS_DIR, exist_ok=True)
         pdf_path = os.path.join(settings.REPORTS_DIR, output_filename)
         
-        # Create Letter Page Canvas
-        c = canvas.Canvas(pdf_path, pagesize=letter)
-        width, height = letter
+        # Setup Document
+        doc = SimpleDocTemplate(
+            pdf_path,
+            pagesize=letter,
+            rightMargin=54,
+            leftMargin=54,
+            topMargin=54,
+            bottomMargin=54
+        )
         
-        # Color Palette
-        primary_color = colors.HexColor("#0d9488")  # Teal
-        dark_neutral = colors.HexColor("#1f2937")    # Gray 800
-        light_neutral = colors.HexColor("#f3f4f6")   # Gray 100
-        border_color = colors.HexColor("#e5e7eb")    # Gray 200
+        elements = []
+        styles = getSampleStyleSheet()
         
-        # Risk Badge Colors
-        if prediction == "Low Risk":
-            badge_bg = colors.HexColor("#d1fae5")
-            badge_fg = colors.HexColor("#065f46")
-        elif prediction == "Medium Risk":
-            badge_bg = colors.HexColor("#fef3c7")
-            badge_fg = colors.HexColor("#92400e")
-        else:  # High Risk
-            badge_bg = colors.HexColor("#fee2e2")
-            badge_fg = colors.HexColor("#991b1b")
-            
-        # Draw Background Decor (Top Header Band)
-        c.setFillColor(primary_color)
-        c.rect(0, height - 12, width, 12, fill=True, stroke=False)
+        # Custom Styles
+        title_style = ParagraphStyle(
+            'ReportTitle',
+            parent=styles['Heading1'],
+            fontName='Helvetica-Bold',
+            fontSize=24,
+            textColor=colors.HexColor("#0d9488"),
+            spaceAfter=6
+        )
         
-        # Header - Brand & Document Title
-        c.setFillColor(primary_color)
-        c.setFont("Helvetica-Bold", 24)
-        c.drawString(54, height - 50, "CancerGuard AI")
+        header_right_style = ParagraphStyle(
+            'HeaderRight',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=10,
+            textColor=colors.HexColor("#1f2937"),
+            alignment=TA_RIGHT
+        )
         
-        c.setFillColor(dark_neutral)
-        c.setFont("Helvetica", 10)
-        c.drawRightString(width - 54, height - 40, "AUTOMATED RISK ASSESSMENT REPORT")
-        c.drawRightString(width - 54, height - 52, f"Date: {scan_date.strftime('%Y-%m-%d %H:%M:%S')}")
+        section_heading = ParagraphStyle(
+            'SectionHeading',
+            parent=styles['Heading2'],
+            fontName='Helvetica-Bold',
+            fontSize=14,
+            textColor=colors.HexColor("#1f2937"),
+            spaceBefore=15,
+            spaceAfter=10
+        )
         
-        # Header Divider
-        c.setStrokeColor(border_color)
-        c.setLineWidth(1)
-        c.line(54, height - 65, width - 54, height - 65)
+        # Header Table
+        header_data = [
+            [
+                Paragraph("CancerGuard AI", title_style),
+                Paragraph("<b>CONFIDENTIAL CLINICAL REPORT</b><br/>" + f"Date: {scan_date.strftime('%Y-%m-%d %H:%M')}", header_right_style)
+            ]
+        ]
+        header_table = Table(header_data, colWidths=[250, 250])
+        header_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+        ]))
+        
+        elements.append(header_table)
+        elements.append(HRFlowable(width="100%", color=colors.HexColor("#e5e7eb"), thickness=1, spaceBefore=10, spaceAfter=20))
+        
+        # Mock Scan ID
+        scan_id = output_filename.split('.')[0][-8:].upper() if '.' in output_filename else str(uuid.uuid4())[-8:].upper()
         
         # Patient Details Section
-        c.setFillColor(dark_neutral)
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(54, height - 90, "Patient Details")
+        elements.append(Paragraph("Patient Demographics", section_heading))
         
-        # Patient Details Grid
-        c.setFillColor(light_neutral)
-        c.rect(54, height - 165, width - 108, 60, fill=True, stroke=False)
+        patient_data = [
+            ["Full Name:", user_info.get("full_name", "N/A"), "Patient ID:", f"PT-{scan_id}"],
+            ["Email:", user_info.get("email", "N/A"), "Scan ID:", f"SCN-{scan_id}"],
+            ["Age:", str(user_info.get("age", "N/A")), "Gender:", str(user_info.get("gender", "N/A")).capitalize()],
+        ]
         
-        c.setFillColor(dark_neutral)
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(70, height - 115, "Full Name:")
-        c.drawString(70, height - 135, "Email:")
-        c.drawString(340, height - 115, "Age:")
-        c.drawString(340, height - 135, "Gender:")
+        patient_table = Table(patient_data, colWidths=[80, 170, 80, 170])
+        patient_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor("#1f2937")),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (2, 0), (2, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+            ('FONTNAME', (3, 0), (3, -1), 'Helvetica'),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#e2e8f0"))
+        ]))
+        elements.append(patient_table)
         
-        c.setFont("Helvetica", 10)
-        c.drawString(140, height - 115, user_info.get("full_name", "N/A"))
-        c.drawString(140, height - 135, user_info.get("email", "N/A"))
-        c.drawString(390, height - 115, str(user_info.get("age", "N/A")))
-        c.drawString(390, height - 135, str(user_info.get("gender", "N/A")).capitalize())
+        # Clinical Assessment
+        elements.append(Paragraph("Diagnostic AI Assessment", section_heading))
         
-        # Assessment Section
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(54, height - 200, "Scan Risk Assessment")
-        
-        # Scan Info Box
-        c.setStrokeColor(border_color)
-        c.rect(54, height - 320, width - 108, 100, fill=False, stroke=True)
-        
-        c.setFont("Helvetica-Bold", 11)
-        c.drawString(70, height - 235, "Cancer Category:")
-        c.drawString(70, height - 265, "Assessment Result:")
-        c.drawString(70, height - 295, "Model Confidence:")
-        
-        c.setFont("Helvetica", 11)
-        c.drawString(180, height - 235, cancer_type.replace("_", " ").title())
-        
-        # Draw Risk Badge
-        c.setFillColor(badge_bg)
-        # badge width is ~100pt, height 18pt
-        c.rect(180, height - 271, 100, 18, fill=True, stroke=False)
-        c.setFillColor(badge_fg)
-        c.setFont("Helvetica-Bold", 10)
-        c.drawCentredString(230, height - 266, prediction)
-        
-        c.setFillColor(dark_neutral)
-        c.setFont("Helvetica", 11)
-        c.drawString(180, height - 295, f"{confidence}%")
-        
-        # Recommendation Section
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(54, height - 350, "AI Recommendations")
-        
-        c.setFillColor(light_neutral)
-        c.rect(54, height - 440, width - 108, 70, fill=True, stroke=False)
-        
-        c.setFillColor(dark_neutral)
-        c.setFont("Helvetica-Oblique", 11)
-        # Wrap recommendation text
-        rec_text = recommendation
-        if len(rec_text) > 85:
-            # simple split
-            line1 = rec_text[:85] + "-" if not rec_text[85].isspace() else rec_text[:85]
-            line2 = rec_text[85:].strip()
-            c.drawString(70, height - 390, line1)
-            c.drawString(70, height - 410, line2)
+        # Risk color
+        if prediction == "Low Risk":
+            risk_color = colors.HexColor("#059669")
+        elif prediction == "Medium Risk":
+            risk_color = colors.HexColor("#d97706")
         else:
-            c.drawString(70, height - 400, rec_text)
+            risk_color = colors.HexColor("#dc2626")
             
-        # Clinical Disclaimer Section (Strictly Required)
-        c.setFillColor(colors.HexColor("#fef2f2"))
-        c.rect(54, 80, width - 108, 60, fill=True, stroke=True)
-        c.setStrokeColor(colors.HexColor("#f87171"))
-        c.rect(54, 80, width - 108, 60, fill=False, stroke=True)
+        risk_style = ParagraphStyle(
+            'RiskStyle',
+            fontName='Helvetica-Bold',
+            fontSize=12,
+            textColor=risk_color
+        )
         
-        c.setFillColor(colors.HexColor("#991b1b"))
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(70, 120, "IMPORTANT MEDICAL DISCLAIMER:")
+        assessment_data = [
+            ["Cancer Category:", cancer_type.replace("_", " ").title()],
+            ["AI Probability Score:", f"{confidence}%"],
+            ["Risk Classification:", Paragraph(prediction, risk_style)]
+        ]
         
-        c.setFont("Helvetica", 9)
-        disclaimer_line1 = "This AI system provides risk assessment only and is not a substitute for professional medical diagnosis."
-        disclaimer_line2 = "The predictions generated are assistant insights. Always seek the advice of a qualified healthcare provider."
-        c.drawString(70, 105, disclaimer_line1)
-        c.drawString(70, 93, disclaimer_line2)
+        assessment_table = Table(assessment_data, colWidths=[150, 350])
+        assessment_table.setStyle(TableStyle([
+            ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor("#475569")),
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+            ('LINEBELOW', (0, 0), (-1, -2), 0.5, colors.HexColor("#e2e8f0")),
+            ('BOX', (0, 0), (-1, -1), 1, colors.HexColor("#cbd5e1"))
+        ]))
+        elements.append(assessment_table)
         
-        # Footer
-        c.setFillColor(colors.HexColor("#9ca3af"))
-        c.setFont("Helvetica", 8)
-        c.drawString(54, 40, "Report generated automatically by CancerGuard AI platform.")
-        c.drawRightString(width - 54, 40, "Page 1 of 1")
+        # Recommendations
+        elements.append(Paragraph("AI Recommendations", section_heading))
         
-        c.save()
+        rec_style = ParagraphStyle(
+            'RecStyle',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=11,
+            leading=16,
+            textColor=colors.HexColor("#334155")
+        )
+        
+        rec_data = [[Paragraph(recommendation, rec_style)]]
+        rec_table = Table(rec_data, colWidths=[500])
+        rec_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#f8fafc")),
+            ('PADDING', (0, 0), (-1, -1), 15),
+            ('BOX', (0, 0), (-1, -1), 1, colors.HexColor("#e2e8f0"))
+        ]))
+        elements.append(rec_table)
+        
+        # Physician Notes
+        elements.append(Paragraph("Attending Physician Notes", section_heading))
+        notes_data = [["\n\n\n"]]
+        notes_table = Table(notes_data, colWidths=[500])
+        notes_table.setStyle(TableStyle([
+            ('BOX', (0, 0), (-1, -1), 0.5, colors.HexColor("#94a3b8")),
+            ('BACKGROUND', (0, 0), (-1, -1), colors.white)
+        ]))
+        elements.append(notes_table)
+        
+        elements.append(Spacer(1, 40))
+        
+        # Signature
+        sig_data = [
+            ["___________________________", ""],
+            ["Reviewing Physician Signature", f"Date: ____________"]
+        ]
+        sig_table = Table(sig_data, colWidths=[250, 250])
+        sig_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor("#475569"))
+        ]))
+        elements.append(sig_table)
+        
+        elements.append(Spacer(1, 40))
+        
+        # Medical Disclaimer
+        disclaimer_style = ParagraphStyle(
+            'Disclaimer',
+            parent=styles['Normal'],
+            fontName='Helvetica-Bold',
+            fontSize=9,
+            textColor=colors.HexColor("#991b1b"),
+            alignment=TA_CENTER
+        )
+        
+        disclaimer_text = (
+            "IMPORTANT MEDICAL DISCLAIMER: This AI system provides risk assessment only "
+            "and is not a substitute for professional medical diagnosis. The predictions generated "
+            "are assistant insights. Always seek the advice of a qualified healthcare provider."
+        )
+        
+        disc_data = [[Paragraph(disclaimer_text, disclaimer_style)]]
+        disc_table = Table(disc_data, colWidths=[500])
+        disc_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#fef2f2")),
+            ('BOX', (0, 0), (-1, -1), 1, colors.HexColor("#f87171")),
+            ('PADDING', (0, 0), (-1, -1), 10)
+        ]))
+        elements.append(disc_table)
+        
+        # Build Document
+        doc.build(elements)
+        
         return pdf_path

@@ -5,7 +5,8 @@ from app.config import settings
 from app.database.connection import engine, Base, SessionLocal
 from app.models.user import User, Admin
 from app.utils.security import get_password_hash
-from app.routes import auth, predict, scans, reports, admin
+from app.routes import auth, scans, reports, admin, notifications
+from app.routes import predict_enhanced as predict  # Use enhanced predict routes with 15+ cancer types
 
 # Create database tables (SQLAlchemy base metadata create)
 Base.metadata.create_all(bind=engine)
@@ -39,7 +40,7 @@ def seed_admin_user():
             db.add(new_admin_table_entry)
             
             db.commit()
-            print("Default admin user created: admin@cancerguard.ai / adminpassword123")
+            print("✅ Default admin user created: admin@cancerguard.ai / adminpassword123")
     except Exception as e:
         print(f"Error seeding admin user: {e}")
     finally:
@@ -49,8 +50,11 @@ seed_admin_user()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="AI-assisted Cancer Risk Assessment Platform Backend APIs",
-    version="1.0.0"
+    description="🚀 AI-assisted Cancer Risk Assessment Platform - Supporting 15+ Cancer Types with Advanced Analytics",
+    version="2.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json"
 )
 
 # CORS Configuration
@@ -59,7 +63,9 @@ origins = [
     "http://localhost:3000",
     "https://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://127.0.0.1:3000"
+    "https://127.0.0.1:3000",
+    "http://localhost:3001",
+    "https://localhost:3001"
 ]
 
 app.add_middleware(
@@ -75,6 +81,7 @@ app.include_router(auth.router, prefix=settings.API_V1_STR)
 app.include_router(predict.router, prefix=settings.API_V1_STR)
 app.include_router(scans.router, prefix=settings.API_V1_STR)
 app.include_router(reports.router, prefix=settings.API_V1_STR)
+app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
 
 @app.get("/")

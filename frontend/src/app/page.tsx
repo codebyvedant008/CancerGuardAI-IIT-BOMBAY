@@ -47,7 +47,7 @@ export default function LandingPage() {
     },
     {
       q: "Which cancer modules are currently supported?",
-      a: "We support initial risk assessment for four main categories: Skin Cancer (melanoma, carcinoma), Brain Tumor (MRI scans), Lung Cancer (chest X-rays), and Breast Cancer (mammograms)."
+      a: "We support initial risk assessment for sixteen main categories including Skin Cancer, Brain Tumor, Lung Cancer, Breast Cancer, and twelve others covering a wide range of oncology."
     },
     {
       q: "How accurate is the risk assessment?",
@@ -199,7 +199,7 @@ export default function LandingPage() {
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
           <h2 className="text-xs font-bold text-teal-600 uppercase tracking-widest">Available Assessments</h2>
           <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Support For Multiple Scan Types</p>
-          <p className="text-slate-500">Our platform is designed as an extensible multi-model architecture. Select from our four initial screening modules.</p>
+          <p className="text-slate-500">Our platform is designed as an extensible multi-model architecture. Select from our sixteen screening modules.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

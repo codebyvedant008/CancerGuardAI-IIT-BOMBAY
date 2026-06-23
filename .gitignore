@@ -2,8 +2,32 @@ node_modules/
 venv/
 __pycache__/
 .env
+.env.local
 *.pyc
 .DS_Store
 .next/
 dist/
 build/
+
+# Exclude uploaded patient scans (privacy)
+backend/uploads/
+
+# Exclude generated PDF reports (privacy)
+backend/reports/
+
+# Exclude SQLite database (fresh DB on each install)
+backend/cancerguard.db
+cancerguard.db
+
+# Python cache
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+
+# IDE
+.vscode/
+.idea/
+
+# Scratch files
+generate_pdf.py

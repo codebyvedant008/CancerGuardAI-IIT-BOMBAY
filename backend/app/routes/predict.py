@@ -6,7 +6,7 @@ from app.database.connection import get_db
 from app.models.user import User
 from app.models.scan import Scan
 from app.models.prediction import Prediction
-from app.services.ai_service import ai_service
+from app.services.ai_service import ai_service, CancerType
 from app.utils.dependencies import get_current_user
 from app.config import settings
 
@@ -91,38 +91,20 @@ async def process_and_predict(
         "disclaimer": DISCLAIMER
     }
 
-@router.post("/skin")
-async def predict_skin(
+@router.post("/{cancer_type}")
+async def predict_any(
+    cancer_type: str,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Upload and assess skin cancer risk (e.g. Melanoma)."""
-    return await process_and_predict("skin_cancer", file, current_user, db)
+    """Upload and assess cancer risk for any supported cancer type."""
+    try:
+        valid_type = CancerType(cancer_type)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported cancer type: {cancer_type}"
+        )
+    return await process_and_predict(valid_type.value, file, current_user, db)
 
-@router.post("/brain")
-async def predict_brain(
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Upload and assess brain tumor risk."""
-    return await process_and_predict("brain_tumor", file, current_user, db)
-
-@router.post("/lung")
-async def predict_lung(
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Upload and assess lung cancer risk."""
-    return await process_and_predict("lung_cancer", file, current_user, db)
-
-@router.post("/breast")
-async def predict_breast(
-    file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
-):
-    """Upload and assess breast cancer risk (e.g. Mammography)."""
-    return await process_and_predict("breast_cancer", file, current_user, db)

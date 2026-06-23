@@ -1,125 +1,269 @@
-# CancerGuard AI — Clinical Risk Assessment Platform
+# CancerGuard AI 🏥
 
-CancerGuard AI is a secure, modern, production-ready, AI-assisted cancer risk screening and clinical assessment platform. It supports modular AI prediction workflows for **Skin Cancer**, **Brain Tumor**, **Lung Cancer**, and **Breast Cancer** scans, and generates clinical-grade PDF reports with strict medical disclaimers.
+<div align="center">
 
-> [!IMPORTANT]
-> **Strict Medical Disclaimer:** This AI system provides risk assessment only and is not a substitute for professional medical diagnosis. All output assessments are experimental screening guides and must be verified by a qualified physician.
+![CancerGuard AI Banner](https://img.shields.io/badge/CancerGuard-AI%20Risk%20Screening-teal?style=for-the-badge&logo=activity)
 
----
+**AI-Powered Cancer Risk Assessment Platform**
 
-## 🚀 Key Features
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python)](https://python.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite)](https://sqlite.org/)
 
-1. **Secure Authentication:** JWT-based user and admin sessions, encrypted passwords, session checks.
-2. **AI Screening Modules:**
-   - **Skin Cancer:** Dermoscopic lesion analysis.
-   - **Brain Tumor:** MRI scan evaluation.
-   - **Lung Cancer:** Chest X-ray analysis.
-   - **Breast Cancer:** Digital Mammogram assessment.
-3. **Interactive Dashboards:**
-   - **Patient Dashboard:** Metrics, history, and custom SVG risk distributions.
-   - **Admin Portal:** Platforms stats, category breakdowns, user registries, and audit logs.
-4. **Clinical PDF Reports:** Generated on-demand using ReportLab, branded, signed, and complete with patient demographics, risk levels, and medical disclaimers.
-5. **Docker Integration:** Easy multi-container orchestration.
+> ⚠️ **Medical Disclaimer:** CancerGuard AI provides AI-assisted risk assessment only. It is **not a substitute for professional medical diagnosis**. All outputs must be verified by a qualified healthcare provider.
+
+</div>
 
 ---
 
-## 🛠️ Tech Stack
+## 📋 Overview
 
-* **Frontend:** Next.js (App Router, TypeScript, Tailwind CSS, Lucide icons)
-* **Backend:** FastAPI (Python, Uvicorn, Pydantic, SQLAlchemy)
-* **Database:** PostgreSQL (with automatic SQLite fallback for testing)
-* **Reporting:** ReportLab (clinical-grade PDF builder)
-* **Containerization:** Docker & Docker Compose
+**CancerGuard AI** is a full-stack, production-ready cancer risk screening and clinical assessment platform built for the **IIT Bombay** project submission. It leverages modular AI prediction pipelines to analyse uploaded medical scans and produce clinical-grade PDF reports across **16 cancer types**.
+
+The system is designed to assist clinicians and patients by providing rapid, secure, and reproducible AI-powered risk indicators — helping bridge the gap between radiology imaging and early oncology detection.
 
 ---
 
-## 📂 Project Structure
+## ✨ Features
+
+### 🔬 AI Screening Modules (16 Cancer Types)
+| Module | Imaging Modality |
+|---|---|
+| Skin Cancer | Dermoscopic Images |
+| Brain Tumor | MRI Scans |
+| Lung Cancer | Chest X-Rays |
+| Breast Cancer | Mammograms |
+| Prostate Cancer | Ultrasound / MRI |
+| Colorectal Cancer | Colonoscopy Images |
+| Ovarian Cancer | Ultrasound |
+| Thyroid Cancer | Ultrasound |
+| Pancreatic Cancer | CT / MRI |
+| Liver Cancer | CT Scans |
+| Leukemia | Blood Smear Images |
+| Lymphoma | PET / CT Scans |
+| Cervical Cancer | Pap Smear Images |
+| Esophageal Cancer | Endoscopy Images |
+| Stomach Cancer | Endoscopy Images |
+| Melanoma | Dermoscopic Images |
+
+### 🔐 Secure Authentication
+- JWT-based session management
+- Bcrypt password hashing
+- Role-based access control (Patient / Admin)
+
+### 📊 Interactive Dashboards
+- **Patient Dashboard** — scan history, risk trends, metrics
+- **Admin Portal** — platform analytics, user registry, audit logs
+
+### 📄 Clinical PDF Reports
+- Professional, doctor-friendly layout using ReportLab Platypus
+- Patient demographics grid with mock Scan IDs and Patient IDs
+- Color-coded risk classifications (Low / Medium / High)
+- AI Probability Score, recommendations, physician notes & signature block
+- Mandatory medical disclaimer
+
+### 🔔 Notification System
+- In-app notifications for scan results and system events
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Next.js 16, TypeScript, Vanilla CSS |
+| **Backend** | FastAPI, Python 3.11+ |
+| **Database** | SQLite (via SQLAlchemy ORM) |
+| **AI Pipeline** | Modular rule-based + model-ready architecture |
+| **PDF Generation** | ReportLab Platypus |
+| **Authentication** | JWT (python-jose), Bcrypt (passlib) |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- **Node.js** v18+
+- **Python** 3.11+
+- **pip** and **venv**
+
+---
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/codebyvedant008/CancerGuardAI-IIT-BOMBAY.git
+cd CancerGuardAI-IIT-BOMBAY
+```
+
+---
+
+### 2. Backend Setup
+
+```bash
+# Navigate to backend
+cd backend
+
+# Create and activate virtual environment
+python -m venv venv
+
+# On Windows:
+.\venv\Scripts\activate
+
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the backend server
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+The backend API will be live at: **http://localhost:8000**
+Swagger docs: **http://localhost:8000/api/docs**
+
+---
+
+### 3. Frontend Setup
+
+```bash
+# Open a new terminal and navigate to frontend
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+The frontend will be live at: **http://localhost:3000**
+
+---
+
+### 4. Default Admin Credentials
+
+```
+Email:    admin@cancerguard.ai
+Password: adminpassword123
+```
+
+---
+
+## 📁 Project Structure
 
 ```
 CancerGuardAI/
 ├── backend/
 │   ├── app/
-│   │   ├── models/        # Database models (User, Scan, Prediction, Report)
-│   │   ├── routes/        # Router endpoints (auth, predict, scans, reports, admin)
-│   │   ├── services/      # AI models & PDF Report generator services
-│   │   ├── utils/         # Helper functions (security, db initialization)
-│   │   ├── config.py      # App configurations
-│   │   └── main.py        # Application entrypoint
-│   ├── Dockerfile
-│   └── requirements.txt
+│   │   ├── main.py              # FastAPI application entry point
+│   │   ├── config.py            # Environment configuration
+│   │   ├── database/            # SQLAlchemy connection & session
+│   │   ├── models/              # ORM models (User, Scan, Prediction, Report)
+│   │   ├── routes/              # API route handlers
+│   │   │   ├── auth.py          # Authentication endpoints
+│   │   │   ├── predict_enhanced.py  # AI prediction (16 cancer types)
+│   │   │   ├── scans.py         # Scan management
+│   │   │   ├── reports.py       # PDF report generation
+│   │   │   ├── admin.py         # Admin portal APIs
+│   │   │   └── notifications.py # Notification system
+│   │   ├── services/
+│   │   │   ├── ai_service.py    # Core AI prediction logic
+│   │   │   ├── pdf_service.py   # Clinical PDF generation
+│   │   │   └── notification_service.py
+│   │   └── utils/
+│   │       ├── security.py      # JWT & password hashing
+│   │       └── dependencies.py  # FastAPI dependencies
+│   ├── requirements.txt
+│   └── reports/                 # Generated PDF reports
+│
 ├── frontend/
 │   ├── src/
-│   │   ├── app/           # App routes (dashboard, login, register, upload, result)
-│   │   ├── components/    # Layouts and reusable widgets
-│   │   ├── context/       # Auth state provider
-│   │   └── services/      # API wrappers
-│   ├── Dockerfile
+│   │   ├── app/                 # Next.js App Router pages
+│   │   │   ├── page.tsx         # Landing page
+│   │   │   ├── dashboard/       # Patient dashboard
+│   │   │   ├── upload/          # Scan upload & result
+│   │   │   ├── history/         # Scan history
+│   │   │   ├── admin/           # Admin portal
+│   │   │   ├── login/           # Authentication
+│   │   │   └── register/        # Registration
+│   │   ├── context/
+│   │   │   └── AuthContext.tsx  # Global auth state
+│   │   └── services/
+│   │       └── api.ts           # API client
 │   └── package.json
-└── docker-compose.yml
+│
+├── docker-compose.yml
+└── README.md
 ```
 
 ---
 
-## 🐳 Docker Deployment (Recommended)
+## 🔌 API Reference
 
-To spin up the entire application, including the database, backend, and frontend containers:
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Authenticate and get JWT token |
+| `GET` | `/api/auth/me` | Get current user profile |
+| `POST` | `/api/predict/{cancer_type}` | Submit scan for AI prediction |
+| `GET` | `/api/scans/history` | Get user scan history |
+| `GET` | `/api/reports/download/{prediction_id}` | Download PDF report |
+| `GET` | `/api/admin/analytics` | Admin platform statistics |
+| `GET` | `/api/admin/users` | Admin user registry |
 
-```bash
-docker-compose up --build
-```
-
-Access the interfaces:
-* **Frontend Dashboard:** `http://localhost:3000`
-* **FastAPI Backend Swagger Specs:** `http://localhost:8000/docs`
-
-### 🔑 Default Credentials
-On database startup, a default administrator account is seeded:
-* **Email:** `admin@cancerguard.ai`
-* **Password:** `adminpassword123`
+Full interactive API documentation: [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
 
 ---
 
-## ⚙️ Local Development Setup
+## 📸 Screenshots
 
-### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   # On Windows:
-   venv\Scripts\activate
-   # On macOS/Linux:
-   source venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Copy/configure environment variables in `.env` (a template is auto-generated on launch).
-5. Start Uvicorn:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
+### Landing Page
+> Modern, responsive hero section with live risk monitor preview.
 
-### Frontend Setup
-1. Navigate to the frontend directory:
-   ```bash
-   cd ../frontend
-   ```
-2. Install npm dependencies:
-   ```bash
-   npm install
-   ```
-3. Boot the Next.js development server:
-   ```bash
-   npm run dev
-   ```
-4. Open `http://localhost:3000` in your browser.
+### Patient Dashboard
+> Real-time scan statistics, history, and risk distribution charts.
+
+### Upload & Result
+> Multi-step scan upload with immediate AI risk assessment output.
+
+### Clinical PDF Report
+> Professional, doctor-friendly report with patient demographics, AI findings, and physician signature block.
 
 ---
 
-## 🔒 Data Privacy & Access Control
-All patient scans are encrypted and strictly isolated. General users can only view their own uploaded logs. Only designated system administrators (`is_admin=True`) have access to compile aggregate statistics and view clinical logs across the entire user base.
+## 🛡️ Security
+
+- All passwords are hashed using **bcrypt** — never stored in plain text
+- JWT tokens expire after a configurable time period
+- CORS policy restricts requests to trusted origins only
+- Medical scan files are stored securely with access control tied to user accounts
+
+---
+
+## ⚠️ Medical Disclaimer
+
+> **IMPORTANT:** CancerGuard AI is an AI-assisted risk screening tool intended to **support**, not replace, the clinical judgment of a qualified medical professional. All predictions generated are probabilistic indicators based on reference patterns and are for informational purposes only. Always consult a licensed oncologist or physician before making any medical decisions.
+
+---
+
+## 👨‍💻 Author
+
+**Vedant** — [codebyvedant008](https://github.com/codebyvedant008)
+
+Project developed for **IIT Bombay** submission.
+
+---
+
+## 📄 License
+
+This project is submitted for academic purposes under the IIT Bombay project guidelines.
+
+---
+
+<div align="center">
+  <strong>Built with ❤️ for better cancer screening accessibility</strong>
+</div>

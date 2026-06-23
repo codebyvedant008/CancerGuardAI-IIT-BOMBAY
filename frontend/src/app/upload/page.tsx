@@ -14,7 +14,15 @@ import {
   Wind, 
   Heart,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Zap,
+  Droplet,
+  Crown,
+  Shield,
+  Flame,
+  TrendingUp,
+  AlertTriangle,
+  Beaker
 } from "lucide-react";
 
 export default function UploadScanPage() {
@@ -35,6 +43,18 @@ export default function UploadScanPage() {
     { id: "brain", name: "Brain Tumor", value: "brain", desc: "MRI slice scan imaging", icon: Brain },
     { id: "lung", name: "Lung Cancer", value: "lung", desc: "Chest radiograph X-rays", icon: Wind },
     { id: "breast", name: "Breast Cancer", value: "breast", desc: "Digital Mammograms", icon: Heart },
+    { id: "colorectal", name: "Colorectal Cancer", value: "colorectal", desc: "Colonoscopy & endoscopy", icon: Flame },
+    { id: "ovarian", name: "Ovarian Cancer", value: "ovarian", desc: "Ultrasound imaging", icon: Droplet },
+    { id: "prostate", name: "Prostate Cancer", value: "prostate", desc: "MRI & biopsy imaging", icon: Shield },
+    { id: "thyroid", name: "Thyroid Cancer", value: "thyroid", desc: "Ultrasound & CT scans", icon: Crown },
+    { id: "pancreatic", name: "Pancreatic Cancer", value: "pancreatic", desc: "CT & MRI imaging", icon: Zap },
+    { id: "liver", name: "Liver Cancer", value: "liver", desc: "Ultrasound & CT scans", icon: TrendingUp },
+    { id: "leukemia", name: "Leukemia", value: "leukemia", desc: "Blood & bone marrow tests", icon: Beaker },
+    { id: "lymphoma", name: "Lymphoma", value: "lymphoma", desc: "CT & PET imaging", icon: Activity },
+    { id: "cervical", name: "Cervical Cancer", value: "cervical", desc: "Pap smear & colposcopy", icon: AlertTriangle },
+    { id: "esophageal", name: "Esophageal Cancer", value: "esophageal", desc: "Endoscopy imaging", icon: Wind },
+    { id: "stomach", name: "Stomach Cancer", value: "stomach", desc: "Endoscopy & CT scans", icon: Flame },
+    { id: "melanoma", name: "Melanoma", value: "melanoma", desc: "Dermoscopy analysis", icon: Fingerprint },
   ];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,7 +197,7 @@ export default function UploadScanPage() {
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
             <h2 className="text-lg font-bold text-slate-800">1. Select Cancer Type</h2>
             
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {cancerOptions.map((opt) => {
                 const Icon = opt.icon;
                 const isSelected = cancerType === opt.value;
@@ -188,7 +208,7 @@ export default function UploadScanPage() {
                     onClick={() => setCancerType(opt.value)}
                     disabled={uploading}
                     className={`
-                      p-4 rounded-2xl border text-left flex items-start space-x-4 transition-all focus:outline-none
+                      p-4 rounded-2xl border text-left flex items-start space-x-3 transition-all focus:outline-none
                       ${isSelected 
                         ? "border-teal-500 bg-teal-50/30 ring-1 ring-teal-500" 
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"}
@@ -201,8 +221,8 @@ export default function UploadScanPage() {
                       <Icon className="h-5 w-5" />
                     </div>
                     <div>
-                      <span className="block font-bold text-slate-800 text-sm">{opt.name}</span>
-                      <span className="block text-xs text-slate-500 mt-0.5">{opt.desc}</span>
+                      <span className="block font-bold text-slate-800 text-xs">{opt.name}</span>
+                      <span className="block text-xs text-slate-500 mt-0.5 line-clamp-1">{opt.desc}</span>
                     </div>
                   </button>
                 );

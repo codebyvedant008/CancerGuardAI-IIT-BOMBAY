@@ -1,14 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Union, Any
 from jose import jwt
-
-# Passlib compatibility monkeypatch for bcrypt >= 4.0.0 in Python 3.12+
-import bcrypt
-if not hasattr(bcrypt, "__about__"):
-    class BcryptAbout:
-        __version__ = getattr(bcrypt, "__version__", "4.0.0")
-    bcrypt.__about__ = BcryptAbout() # type: ignore
-
 from passlib.context import CryptContext
 from app.config import settings
 
