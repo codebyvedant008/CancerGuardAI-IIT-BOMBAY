@@ -4,7 +4,7 @@
   "description": "Modern AI-powered Cancer Risk Assessment Platform - Supporting 15+ Cancer Types",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -12,33 +12,33 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
+    "axios": "^1.6.2",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.16",
     "lucide-react": "^1.17.0",
     "next": "16.2.7",
+    "next-nprogress-bar": "^2.1.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "axios": "^1.6.2",
-    "zustand": "^4.4.1",
-    "framer-motion": "^10.16.16",
-    "recharts": "^2.10.3",
-    "date-fns": "^2.30.0",
     "react-hot-toast": "^2.4.1",
-    "next-nprogress-bar": "^2.1.0",
-    "clsx": "^2.0.0",
-    "tailwind-merge": "^2.2.0"
+    "recharts": "^2.10.3",
+    "tailwind-merge": "^2.2.0",
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
-    "tailwindcss": "^4",
-    "typescript": "^5",
     "prettier": "^3.0.3",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
-

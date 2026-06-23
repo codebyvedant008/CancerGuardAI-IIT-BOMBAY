@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CancerGuard AI - AI-Assisted Cancer Risk Assessment",
-  description: "A secure, modern, AI-assisted platform for screening and clinical risk assessment of skin, brain, lung, and breast cancer scans.",
-  keywords: ["cancer detection", "AI risk assessment", "medical imaging", "skin cancer", "brain tumor", "lung cancer", "breast cancer"],
-  authors: [{ name: "CancerGuard AI Team" }],
+  title: "CancerGuard AI",
+  description: "AI-Powered Cancer Risk Screening",
+  manifest: "/manifest.json",
+  themeColor: "#0f172a",
 };
 
 export default function RootLayout({
