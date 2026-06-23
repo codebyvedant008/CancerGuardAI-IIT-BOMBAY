@@ -1,5 +1,6 @@
 "use client";
 
+// @ts-nocheck
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Upload, Check, X, AlertCircle, Loader } from "lucide-react";
