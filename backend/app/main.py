@@ -10,18 +10,12 @@ from app.routes import auth, scans, reports, admin, notifications, chat, doctor,
 from app.routes import predict_enhanced as predict  # Use enhanced predict routes with 15+ cancer types
 
 # Create database tables (SQLAlchemy base metadata create)
-try:
-    Base.metadata.create_all(bind=engine)
-    print("[OK] Database tables verified.")
-except Exception as e:
-    print(f"[ERROR] Could not connect to the database or create tables: {e}")
-    # We do not exit here so the app can still start and show the exact error in logs
+Base.metadata.create_all(bind=engine)
 
 # Seed default admin user if not exists
 def seed_admin_user():
-    db = None
+    db = SessionLocal()
     try:
-        db = SessionLocal()
         # Check if default admin exists in Users (marked with is_admin=True)
         admin_email = "admin@cancerguard.ai"
         admin_user = db.query(User).filter(User.email == admin_email).first()
@@ -51,8 +45,7 @@ def seed_admin_user():
     except Exception as e:
         print(f"Error seeding admin user: {e}")
     finally:
-        if db:
-            db.close()
+        db.close()
 
 seed_admin_user()
 
@@ -77,6 +70,7 @@ origins = [
     "https://127.0.0.1:3000",
     "http://localhost:3001",
     "https://localhost:3001",
+    "https://cancer-guard-ai-iit-bombay-8es1.vercel.app",
 ]
 
 # Add production frontend URL if configured
