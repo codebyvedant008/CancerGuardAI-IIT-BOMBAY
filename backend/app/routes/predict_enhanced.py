@@ -26,7 +26,8 @@ async def process_and_predict(
     cancer_type: str,
     file: UploadFile,
     current_user: User,
-    db: Session
+    db: Session,
+    language: str = "en"
 ):
     """
     Common helper to process uploaded scan and generate prediction.
@@ -87,7 +88,7 @@ async def process_and_predict(
     
     # 5. Generate AI Prediction
     try:
-        prediction_result = await ai_service.predict_risk(cancer_type.lower(), save_path)
+        prediction_result = await ai_service.predict_risk(cancer_type.lower(), save_path, language)
     except Exception as e:
         logger.error(f"AI Prediction error for {cancer_type}: {e}")
         if os.path.exists(save_path):
@@ -150,16 +151,14 @@ async def predict_unified(
     cancer_type: str,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    language: str = Query("en", description="Language code for the AI response")
 ):
     """
     Unified endpoint for cancer risk prediction.
     Accepts any supported cancer type in the path.
-    
-    Supported cancer types: skin, brain, lung, breast, colorectal, ovarian, prostate,
-    thyroid, pancreatic, liver, leukemia, lymphoma, cervical, esophageal, stomach, melanoma
     """
-    return await process_and_predict(cancer_type, file, current_user, db)
+    return await process_and_predict(cancer_type, file, current_user, db, language)
 
 # Individual endpoints for backwards compatibility
 @router.post("/skin", summary="Skin Cancer Detection")

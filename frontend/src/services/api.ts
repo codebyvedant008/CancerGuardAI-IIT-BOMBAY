@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://cancerguardai-iit-bombay.onrender.com/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 
 export interface UserProfile {
   id: string;
@@ -8,6 +8,7 @@ export interface UserProfile {
   gender: string | null;
   is_active: boolean;
   is_admin: boolean;
+  role: string;
   created_at: string;
   profile_picture?: string | null;
 }

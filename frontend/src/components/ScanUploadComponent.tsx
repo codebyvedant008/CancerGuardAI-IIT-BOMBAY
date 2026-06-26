@@ -114,11 +114,11 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
       <div
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="relative border-2 border-dashed border-blue-300 rounded-2xl p-8 bg-gradient-to-br from-blue-50 to-blue-100 hover:border-blue-500 transition-all duration-300 cursor-pointer group"
+        className="relative border-2 border-dashed border-blue-400/40 dark:border-teal-500/30 rounded-2xl p-8 glass-panel hover:border-blue-500 dark:hover:border-teal-400 hover:shadow-blue-500/20 dark:hover:shadow-teal-500/20 transition-all duration-500 cursor-pointer group overflow-hidden"
       >
         {/* Background animation */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-blue-400/10 to-blue-400/0 rounded-2xl"
+          className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 dark:via-teal-500/10 to-blue-500/0 rounded-2xl"
           animate={{
             backgroundPosition: ["0% 0%", "100% 0%"],
           }}
@@ -135,7 +135,7 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Upload className="w-16 h-16 mx-auto mb-4 text-blue-600" />
+              <Upload className="w-16 h-16 mx-auto mb-4 text-blue-600 dark:text-teal-400 drop-shadow-md" />
             </motion.div>
           ) : (
             <motion.img
@@ -147,10 +147,10 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
             />
           )}
 
-          <h3 className="text-xl font-bold text-gray-800 mb-2">
+          <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2 tracking-tight">
             {preview ? "Image Selected" : "Upload Medical Image"}
           </h3>
-          <p className="text-gray-600 mb-4">
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
             {preview
               ? file?.name
               : "Drag & drop your image or click to browse"}
@@ -169,7 +169,7 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-teal-600 dark:to-teal-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-blue-500/25 dark:hover:shadow-teal-500/25 transition-all"
             >
               {preview ? "Change Image" : "Select File"}
             </motion.button>
@@ -186,7 +186,7 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
                 whileTap={{ scale: 0.95 }}
                 onClick={handleUpload}
                 disabled={isLoading}
-                className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors flex items-center gap-2"
+                className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-emerald-500/25 disabled:opacity-50 transition-all flex items-center gap-2"
               >
                 <Check className="w-5 h-5" />
                 Process & Analyze
@@ -198,7 +198,7 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
                   setFile(null);
                   setPreview("");
                 }}
-                className="px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors flex items-center gap-2"
+                className="px-6 py-2.5 bg-gradient-to-r from-slate-600 to-slate-500 text-white rounded-xl font-semibold shadow-lg hover:shadow-slate-500/25 transition-all flex items-center gap-2"
               >
                 <X className="w-5 h-5" />
                 Clear
@@ -212,13 +212,13 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
               animate={{ opacity: 1 }}
               className="mt-4"
             >
-              <Loader className="w-8 h-8 mx-auto mb-3 animate-spin text-blue-600" />
-              <p className="text-blue-600 font-semibold">
+              <Loader className="w-8 h-8 mx-auto mb-3 animate-spin text-blue-600 dark:text-teal-400" />
+              <p className="text-blue-600 dark:text-teal-400 font-semibold">
                 Processing your scan...
               </p>
               <div className="w-full bg-gray-300 rounded-full h-2 mt-2">
                 <motion.div
-                  className="bg-blue-600 h-2 rounded-full"
+                  className="bg-gradient-to-r from-blue-600 to-teal-400 h-2 rounded-full"
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.3 }}
                 />
@@ -231,11 +231,11 @@ export const ScanUploadComponent: React.FC<ScanUploadProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-6 p-4 bg-white/50 rounded-lg border border-blue-200"
+          className="mt-6 p-4 glass-panel rounded-xl border-l-4 border-l-blue-500 dark:border-l-teal-500"
         >
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-gray-700">
+            <AlertCircle className="w-5 h-5 text-blue-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-slate-700 dark:text-slate-300">
               <p className="font-semibold mb-1">Medical Disclaimer</p>
               <p>
                 This AI system provides risk assessment only and is not a

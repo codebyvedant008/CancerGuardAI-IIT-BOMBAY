@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environment
+venv/
+.venv/
+ENV/
+env/
+
+# Environment variables — NEVER commit these!
+.env
+.env.*
+!.env.example
+
+# Database files — ephemeral, never commit
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploaded files and generated reports
+uploads/
+reports/
+
+# Logs
+*.log
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

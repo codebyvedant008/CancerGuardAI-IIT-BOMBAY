@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from app.database.connection import get_db
 from app.utils.security import decode_access_token
-from app.models.user import User, Admin
+from app.models.user import User, Admin, UserRole
 
 # Defines the token URL for swagger login
 reusable_oauth2 = OAuth2PasswordBearer(
@@ -37,6 +37,24 @@ def get_current_user(
         )
         
     return user
+
+def require_doctor_role(current_user: User = Depends(get_current_user)) -> User:
+    """Guard: allows only users with the DOCTOR role."""
+    if current_user.role != UserRole.DOCTOR and not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied. Clinical Doctor role required."
+        )
+    return current_user
+
+def require_admin_role(current_user: User = Depends(get_current_user)) -> User:
+    """Guard: allows only admin users."""
+    if not current_user.is_admin and current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied. Administrator role required."
+        )
+    return current_user
 
 def get_current_admin(
     db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)

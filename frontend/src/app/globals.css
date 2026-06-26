@@ -1,26 +1,308 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   CANCERGUARD AI — PREMIUM DARK DESIGN SYSTEM
+   Inspired by: Apple Health, Linear, Stripe
+   ============================================ */
+
+:root {
+  --background: #0F172A;
+  --foreground: #f1f5f9;
+  --primary: #14B8A6;
+  --primary-glow: rgba(20, 184, 166, 0.3);
+  --secondary: #2DD4BF;
+  --accent: #06B6D4;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --card-bg: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-shadow: 0 4px 32px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255,255,255,0.05) inset;
 }
 
+/* ============================
+   BASE
+   ============================ */
+html { color-scheme: dark; }
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0F172A;
+  color: #f1f5f9;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Multi-layer ambient depth */
+  background-image:
+    radial-gradient(ellipse 80% 50% at 10% -10%, rgba(20, 184, 166, 0.10) 0px, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 95% 90%,  rgba(6, 182, 212, 0.07) 0px, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 50% 100%, rgba(45, 212, 191, 0.04) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* ============================
+   PREMIUM GLASSMORPHISM SYSTEM
+   ============================ */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.3) inset;
+}
+
+/* Glass hover — premium lift */
+.glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 8px 48px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(20, 184, 166, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Glow variant for accent cards */
+.glass-glow-teal {
+  box-shadow:
+    0 0 0 1px rgba(20, 184, 166, 0.2),
+    0 4px 32px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(20, 184, 166, 0.08);
+}
+.glass-glow-cyan {
+  box-shadow:
+    0 0 0 1px rgba(6, 182, 212, 0.2),
+    0 4px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(6, 182, 212, 0.07);
+}
+
+/* Gradient border trick */
+.gradient-border {
+  position: relative;
+  border-radius: 20px;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(20,184,166,0.4), rgba(6,182,212,0.1), rgba(255,255,255,0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ============================
+   ANIMATIONS
+   ============================ */
+
+/* Smooth pulse glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.15), 0 4px 32px rgba(0,0,0,0.4);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(20, 184, 166, 0.35), 0 4px 32px rgba(0,0,0,0.4);
+  }
+}
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+/* Shimmer for skeleton loaders */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* Floating animation for background elements */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-18px) rotate(3deg); }
+}
+@keyframes float-medium {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-10px) rotate(-2deg); }
+}
+.animate-float-slow   { animation: float-slow   12s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium  8s ease-in-out infinite; }
+
+/* Heartbeat pulse */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.08); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.04); }
+  70%       { transform: scale(1); }
+}
+.animate-heartbeat { animation: heartbeat 2.4s ease-in-out infinite; }
+
+/* Smooth progress fill */
+@keyframes fill-progress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+.animate-fill-progress {
+  animation: fill-progress 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle spin for orbital elements */
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin-slow 20s linear infinite; }
+
+/* Gradient border glow pulse */
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(20,184,166,0.2); }
+  50%       { border-color: rgba(20,184,166,0.5); }
+}
+.animate-border-glow { animation: border-glow 3s ease-in-out infinite; }
+
+/* ============================
+   TYPOGRAPHY SYSTEM
+   ============================ */
+.metric-xl {
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.metric-lg {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.label-xs {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.btn-primary {
+  background: linear-gradient(135deg, #14B8A6, #06B6D4);
+  color: #0F172A;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border-radius: 0.875rem;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 24px rgba(20,184,166,0.3), 0 1px 0 rgba(255,255,255,0.2) inset;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  border-radius: inherit;
+}
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 40px rgba(20,184,166,0.45), 0 1px 0 rgba(255,255,255,0.2) inset;
+}
+.btn-primary:active { transform: translateY(0px) scale(0.98); }
+
+.btn-ghost {
+  background: rgba(255,255,255,0.05);
+  color: #cbd5e1;
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
+}
+
+/* ============================
+   SCROLLBAR
+   ============================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(20,184,166,0.5); }
+
+/* Focus states */
+:focus-visible {
+  outline: 2px solid rgba(20,184,166,0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================
+   SELECTION
+   ============================ */
+::selection { background: rgba(20,184,166,0.35); color: #fff; }
+
+/* ============================
+   PRINT / PDF STYLES
+   ============================ */
+@media print {
+  /* Hide everything in the app */
+  body * { visibility: hidden !important; }
+
+  /* Show only the report wrapper and all its children */
+  .pdf-print-wrapper,
+  .pdf-print-wrapper * {
+    visibility: visible !important;
+  }
+
+  /* Place the wrapper once at the top — NOT fixed (fixed repeats on every page) */
+  .pdf-print-wrapper {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    background: white !important;
+    z-index: 99999 !important;
+    pointer-events: auto !important;
+  }
+
+  .pdf-print-content {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
 }

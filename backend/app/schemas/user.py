@@ -20,6 +20,12 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6)
 
+class DoctorCreate(UserBase):
+    password: str = Field(..., min_length=6)
+    specialty: str
+    license_number: str
+    hospital_affiliation: Optional[str] = None
+
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     age: Optional[int] = Field(None, ge=0, le=120)
@@ -30,11 +36,17 @@ class UserOut(UserBase):
     id: str
     is_active: bool
     is_admin: bool
+    role: str
     created_at: datetime
     profile_picture: Optional[str] = None
 
     class Config:
         from_attributes = True
+
+class DoctorOut(UserOut):
+    role: str
+    specialty: str
+    hospital_affiliation: Optional[str] = None
 
 # Admin Schemas
 class AdminBase(BaseModel):

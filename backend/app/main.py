@@ -3,9 +3,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database.connection import engine, Base, SessionLocal
-from app.models.user import User, Admin
+from app.models.user import User, Admin, DoctorProfile, PatientDoctorLink
+from app.models.scan import ClinicalReview
 from app.utils.security import get_password_hash
-from app.routes import auth, scans, reports, admin, notifications
+from app.routes import auth, scans, reports, admin, notifications, chat, doctor, integration
 from app.routes import predict_enhanced as predict  # Use enhanced predict routes with 15+ cancer types
 
 # Create database tables (SQLAlchemy base metadata create)
@@ -40,7 +41,7 @@ def seed_admin_user():
             db.add(new_admin_table_entry)
             
             db.commit()
-            print("✅ Default admin user created: admin@cancerguard.ai / adminpassword123")
+            print("[OK] Default admin user created: admin@cancerguard.ai / adminpassword123")
     except Exception as e:
         print(f"Error seeding admin user: {e}")
     finally:
@@ -58,15 +59,24 @@ app = FastAPI(
 )
 
 # CORS Configuration
-# Next.js defaults to localhost:3000
+# Reads FRONTEND_URL from environment for production deployments (e.g. Vercel)
+# Falls back to localhost for local development
+FRONTEND_URL = os.getenv("FRONTEND_URL", "")
+
 origins = [
     "http://localhost:3000",
     "https://localhost:3000",
     "http://127.0.0.1:3000",
     "https://127.0.0.1:3000",
     "http://localhost:3001",
-    "https://localhost:3001"
+    "https://localhost:3001",
 ]
+
+# Add production frontend URL if configured
+if FRONTEND_URL:
+    origins.append(FRONTEND_URL)
+    # Also allow with/without trailing slash
+    origins.append(FRONTEND_URL.rstrip("/"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -83,6 +93,9 @@ app.include_router(scans.router, prefix=settings.API_V1_STR)
 app.include_router(reports.router, prefix=settings.API_V1_STR)
 app.include_router(notifications.router, prefix=settings.API_V1_STR)
 app.include_router(admin.router, prefix=settings.API_V1_STR)
+app.include_router(chat.router, prefix=settings.API_V1_STR)
+app.include_router(doctor.router, prefix=settings.API_V1_STR)
+app.include_router(integration.router, prefix=settings.API_V1_STR)
 
 @app.get("/")
 def read_root():

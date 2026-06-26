@@ -3,8 +3,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from app.database.connection import get_db
-from app.models.user import User
-from app.schemas.user import UserCreate, UserOut, UserUpdate, Token
+from app.models.user import User, DoctorProfile, UserRole
+from app.schemas.user import UserCreate, UserOut, UserUpdate, Token, DoctorCreate, DoctorOut
 from app.utils.security import get_password_hash, verify_password, create_access_token
 from app.utils.dependencies import get_current_user
 from app.config import settings
@@ -36,6 +36,55 @@ def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+@router.post("/register/doctor", response_model=DoctorOut, status_code=status.HTTP_201_CREATED)
+def register_doctor(doctor_in: DoctorCreate, db: Session = Depends(get_db)):
+    """Register a new doctor in the system with full transactional safety."""
+    # Pre-validate: check email uniqueness
+    if db.query(User).filter(User.email == doctor_in.email).first():
+        raise HTTPException(status_code=400, detail="A user with this email already exists.")
+    
+    # Pre-validate: check license number uniqueness
+    if db.query(DoctorProfile).filter(DoctorProfile.license_number == doctor_in.license_number).first():
+        raise HTTPException(status_code=400, detail="This medical license number is already registered.")
+    
+    hashed_password = get_password_hash(doctor_in.password)
+    
+    try:
+        # Create Base User
+        db_user = User(
+            email=doctor_in.email,
+            hashed_password=hashed_password,
+            full_name=doctor_in.full_name,
+            age=doctor_in.age,
+            gender=doctor_in.gender,
+            is_admin=False,
+            role=UserRole.DOCTOR
+        )
+        db.add(db_user)
+        db.flush()  # Write to session but don't commit yet — gets us the user ID
+
+        # Create Doctor Profile in the same transaction
+        db_doctor = DoctorProfile(
+            user_id=db_user.id,
+            specialty=doctor_in.specialty,
+            license_number=doctor_in.license_number,
+            hospital_affiliation=doctor_in.hospital_affiliation
+        )
+        db.add(db_doctor)
+        db.commit()  # Only commit once both rows are ready
+        db.refresh(db_user)
+        db.refresh(db_doctor)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Registration failed. Please try again. ({str(e)})")
+    
+    # Construct response
+    return {
+        **db_user.__dict__,
+        "specialty": db_doctor.specialty,
+        "hospital_affiliation": db_doctor.hospital_affiliation
+    }
 
 @router.post("/login", response_model=Token)
 def login_user(
